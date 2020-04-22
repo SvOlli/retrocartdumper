@@ -61,3 +61,21 @@ void dump_f4( ser_fd_t serfd, int outfd )
 {
    dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFF4, 8 );
 }
+
+
+void dump_ef( ser_fd_t serfd, int outfd )
+{
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFE0, 0x10 );
+}
+
+
+void dump_df( ser_fd_t serfd, int outfd )
+{
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFC0, 0x20 );
+}
+
+
+void dump_bf( ser_fd_t serfd, int outfd )
+{
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFF80, 0x40 );
+}

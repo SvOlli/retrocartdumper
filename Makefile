@@ -17,3 +17,6 @@ win32:
 dump2600$(SUFFIX): main.c $(SERIAL) $(wildcard atari2600/dump_*.c)
 	$(CC) $(CFLAGS) -DATARI2600=1 -o $@ $^ $(LDFLAGS)
 
+main.c: atari2600/dump.h main.h
+	touch $@
+
