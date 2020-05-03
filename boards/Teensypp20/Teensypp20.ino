@@ -10,6 +10,7 @@
  Tools -> USB Type -> Serial
 */
 
+#define VERSION "0"
 #define DEBUG_OUTPUT 0
 
 void setup() {
@@ -66,20 +67,20 @@ uint16_t inputHex( uint16_t value, int b )
 void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
 {
   uint16_t i;
-  char outbuffer[16];
-  snprintf( &outbuffer[0], sizeof(outbuffer)-1, "%c %04X %04X", cmd, arg1, arg2 );
 #if DEBUG_OUTPUT
-  Serial.println( &outbuffer[0] );
+  Serial.printf( "%c %04X %04X\n", cmd, arg1, arg2 );
 #endif
   switch( cmd )
   {
+    case 'V':
+      Serial.println( VERSION );
+      break;
     case 'R':
 #if DEBUG_OUTPUT
-      snprintf( &outbuffer[0], sizeof(outbuffer)-1, "%04X %02X\n", arg1, peek( arg1 ) );
+      Serial.printf( "%04X %02X\n", arg1, peek( arg1 ) );
 #else      
-      snprintf( &outbuffer[0], sizeof(outbuffer)-1, "%02X", peek( arg1 ) );
+      Serial.printf( "%02X", peek( arg1 ) );
 #endif
-      Serial.print( &outbuffer[0] );
       break;
     case 'W':
       poke( arg1, arg2 );
@@ -88,11 +89,10 @@ void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
       for( i = 0; i < arg2; ++i )
       {
 #if DEBUG_OUTPUT
-        snprintf( &outbuffer[0], sizeof(outbuffer)-1, "%04X %02X\n", arg1+i, peek( arg1+i ) );
+        Serial.printf( "%04X %02X\n", arg1+i, peek( arg1+i ) );
 #else      
-        snprintf( &outbuffer[0], sizeof(outbuffer)-1, "%02X", peek( arg1+i ) );
+        Serial.printf( "%02X", peek( arg1+i ) );
 #endif
-        Serial.print( &outbuffer[0] );
       }
 #if DEBUG_OUTPUT
       Serial.println();
@@ -123,6 +123,11 @@ void loop() {
         case 0:
           switch( incomingByte )
           {
+            case 'v':
+            case 'V':
+              cmd = 'V';
+              pos = 3;
+              break;
             case 'r':
             case 'R':
               cmd = 'R';
@@ -165,10 +170,17 @@ void loop() {
           }
           break;
         case 2:
-          arg2 = inputHex( arg2, incomingByte );
+          if( incomingByte == ' ')
+          {
+            pos++;
+          }
+          else
+          {
+            arg2 = inputHex( arg2, incomingByte );
 #if DEBUG_OUTPUT
-          Serial.println( arg2, 16 );
+            Serial.println( arg2, 16 );
 #endif
+          }
           break;
         case 255:
           executeCmd( cmd, arg1, arg2 );
