@@ -14,7 +14,7 @@
 #define DEBUG_OUTPUT 0
 
 void setup() {
-	Serial.begin(38400);
+  Serial.begin(38400);
   /* address bus: out */
   DDRD = 0xFF;
   DDRC = 0xFF;
@@ -111,8 +111,8 @@ void loop() {
 
   while( !cmdDone )
   {
-  	if (Serial.available() > 0)
-  	{
+    if (Serial.available() > 0)
+    {
       incomingByte = Serial.read();
       if( incomingByte == 0x0d )
       {
@@ -157,7 +157,7 @@ void loop() {
           }
           break;
         case 1:
-          if( incomingByte == ' ')
+          if( incomingByte == ' ' )
           {
             pos++;
           }
@@ -170,7 +170,7 @@ void loop() {
           }
           break;
         case 2:
-          if( incomingByte == ' ')
+          if( incomingByte == ' ' )
           {
             pos++;
           }
@@ -189,6 +189,6 @@ void loop() {
         default:
           break;
       }
-  	}
+    }
   }
 }

@@ -79,3 +79,15 @@ void dump_bf( ser_fd_t serfd, int outfd )
 {
    dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFF80, 0x40 );
 }
+
+
+void dump_sb128( ser_fd_t serfd, int outfd )
+{
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0x0800, 0x20 );
+}
+
+
+void dump_sb256( ser_fd_t serfd, int outfd )
+{
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0x0800, 0x40 );
+}

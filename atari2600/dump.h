@@ -15,6 +15,8 @@ void dump_ef( ser_fd_t serfd, int outfd );
 void dump_f4( ser_fd_t serfd, int outfd );
 void dump_f6( ser_fd_t serfd, int outfd );
 void dump_f8( ser_fd_t serfd, int outfd );
+void dump_sb128( ser_fd_t serfd, int outfd );
+void dump_sb256( ser_fd_t serfd, int outfd );
 
 #if CREATE_LIST
 #define DUMPER(NAME) { #NAME, dump_ ## NAME }
@@ -22,6 +24,7 @@ const dumper_by_name_t dumpers[] =
 {
    DUMPER(2k), DUMPER(4k),
    DUMPER(f8), DUMPER(f6), DUMPER(f4), DUMPER(ef), DUMPER(df), DUMPER(bf),
+   DUMPER(sb128), DUMPER(sb256),
    DUMPER(3f),
    DUMPER(e0),
    DUMPER(e7),
