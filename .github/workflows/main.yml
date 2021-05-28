@@ -1,4 +1,4 @@
-name: Build, Test and Package Snapshots
+name: Build and Package Snapshots
 
 on:
   push
