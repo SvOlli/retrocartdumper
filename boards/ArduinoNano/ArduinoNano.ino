@@ -6,6 +6,17 @@
  Distributed under the terms of the GPLv3.
 
  Tools -> Board -> Arduino Nano
+
+ !!! Important note !!!
+
+ Because GPIO pins are limited on the Nano, the cartridge A12 signal is wired 
+ to +5V, which basically always selects the ROM address space $1000-$1fff.
+ This means that when using the Nano dumper, only bankswitching schemes are 
+ supported which use hotspots *within* the cartridge ROM address space.
+ For most cartridges brands (e.g. Atari, Activision, Imagic, CBS, M-Network 
+ and Parker Brothers) this is sufficient.
+ If you need support for dumping TigerVision's 3F or Superbanking cartridges, 
+ please use the Teensy++ 2.0 microcontroller instead.
 */
 
 #define VERSION "0"
@@ -13,23 +24,20 @@
 
 void setup() {
   Serial.begin(38400);
-  
-  /* address bus: out */
-  // The cartridge address signals A0-A11 are mapped across port registers D and B.
-  // A12 is hard wired to VCC, as there are no more free GPIOs on the Nano
-  DDRD = DDRD | B11111100; // preserve bits 0 and 1 (TX/RX)
-  DDRB = B00111111; // note: bits 6 and 7 are not usable
-  // see https://www.arduino.cc/en/Reference/PortManipulation
-  
+
   /* data bus: in */
   DDRC = B00000000;
+  
+  /* 
+    address bus: out 
+    cartridge address signals A0-A11 are mapped across port registers D and B
+  */
+  DDRD = DDRD | B11111100; // preserve bits 0 and 1 (TX/RX)
+  DDRB = B00111111; // note: bits 6 and 7 are not usable
 }
 
 static inline void setaddr( uint16_t addr )
 { 
-  // Because the cartidge A12 signal is wired to VCC, only backswitching schemes
-  // are supported which use hotspots within the cartridge ROM address space. 
-  // So f8, f6, f4, parker, CBS, M-Network are supported, but e.g. not TigerVision's 3f.
   PORTB = addr >> 6; 
   PORTD = (PORTD & B00000011) | (addr << 2); // also preserving TX/RX bits
   delay(1);
@@ -82,7 +90,9 @@ void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
       printHex( peek( arg1 ) );
       break;
     case 'W':
-      /* poke/write not supported for Arduino Nano dumper, so just ignore */
+      /* 
+       * poke/write not supported for Arduino Nano dumper, so just ignore 
+       */
       break;
     case 'D':
       for( i = 0; i < arg2; ++i )
