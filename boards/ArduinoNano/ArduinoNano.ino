@@ -5,7 +5,7 @@
 
  Distributed under the terms of the GPLv3.
 
- Tools -> Board -> Arduino Nano
+ Tools -> Board -> Arduino AVR Boards -> Arduino Nano
 
  !!! Important note !!!
 
@@ -19,10 +19,10 @@
  please use the Teensy++ 2.0 microcontroller instead.
 */
 
-#define VERSION "0"
 #define AD_THRESHOLD 512
 
-void setup() {
+void setup()
+{
   Serial.begin(38400);
 
   /* data bus: in */
@@ -54,6 +54,27 @@ static inline uint8_t peek( uint16_t addr )
   return data;
 }
 
+static inline void poke( uint16_t /*addr*/, uint8_t /*data*/ )
+{
+  /*
+   * the Arduino Nano implemntation is not capable of sending data
+   * so do nothing
+   */
+}
+
+
+/*
+ * for easy of develment all code below this line needs to be kept in sync
+ * along all board variations
+ *
+ * required from above are
+ * - peek
+ * - poke
+ */
+
+#define VERSION "0"
+#define DEBUG_OUTPUT 0
+
 uint16_t inputHex( uint16_t value, int b )
 {
   if( (b >= '0') && (b <= '9') )
@@ -81,30 +102,42 @@ void printHex(int num)
 void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
 {
   uint16_t i;
+#if DEBUG_OUTPUT
+  Serial.printf( "%c %04X %04X\n", cmd, arg1, arg2 );
+#endif
   switch( cmd )
   {
     case 'V':
       Serial.println( VERSION );
       break;
     case 'R':
+#if DEBUG_OUTPUT
+      Serial.printf( "%04X %02X\n", arg1, peek( arg1 ) );
+#else
       printHex( peek( arg1 ) );
+#endif
       break;
     case 'W':
-      /* 
-       * poke/write not supported for Arduino Nano dumper, so just ignore 
-       */
+      poke( arg1, arg2 );
       break;
     case 'D':
       for( i = 0; i < arg2; ++i )
       {
+#if DEBUG_OUTPUT
+        Serial.printf( "%04X %02X\n", arg1+i, peek( arg1+i ) );
+#else
         printHex( peek( arg1+i ) );
+#endif
       }
+#if DEBUG_OUTPUT
+      Serial.println();
+#endif
       break;
   }
 }
 
-void loop() 
-{  
+void loop()
+{
   int incomingByte;
   uint8_t cmd = 0;
   uint8_t pos = 0;
@@ -114,7 +147,7 @@ void loop()
 
   while( !cmdDone )
   {
-    if ( Serial.available() )
+    if (Serial.available() > 0)
     {
       incomingByte = Serial.read();
       if( incomingByte == '\r' )
@@ -134,16 +167,25 @@ void loop()
             case 'r':
             case 'R':
               cmd = 'R';
+#if DEBUG_OUTPUT
+              Serial.println("READ");
+#endif
               pos++;
               break;
             case 'w':
             case 'W':
               cmd = 'W';
+#if DEBUG_OUTPUT
+              Serial.println("WRITE");
+#endif
               pos++;
               break;
             case 'd':
             case 'D':
               cmd = 'D';
+#if DEBUG_OUTPUT
+              Serial.println("DUMP");
+#endif
               pos++;
               break;
             default:
@@ -158,6 +200,9 @@ void loop()
           else
           {
             arg1 = inputHex( arg1, incomingByte );
+#if DEBUG_OUTPUT
+            Serial.println( arg1, 16 );
+#endif
           }
           break;
         case 2:
@@ -168,6 +213,9 @@ void loop()
           else
           {
             arg2 = inputHex( arg2, incomingByte );
+#if DEBUG_OUTPUT
+            Serial.println( arg2, 16 );
+#endif
           }
           break;
         case 255:

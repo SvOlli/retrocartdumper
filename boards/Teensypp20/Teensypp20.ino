@@ -6,14 +6,17 @@
 
  Sorry for using Arduino IDE, but I didn't know how else to get USB serial.
 
- Tools -> Board -> Teensy++ 2.0
+ Tools -> Board -> Teensyduino -> Teensy++ 2.0
  Tools -> USB Type -> Serial
+
+ This file also requires "main.cpp" in the same directory to work, other
+ boards need have
+ #include "../Teensypp20/main.cpp"
+ to work properly
 */
 
-#define VERSION "0"
-#define DEBUG_OUTPUT 0
-
-void setup() {
+void setup()
+{
   Serial.begin(38400);
   /* address bus: out */
   DDRD = 0xFF;
@@ -47,6 +50,19 @@ static inline void poke( uint16_t addr, uint8_t data )
   PORTF = data;
 }
 
+
+/*
+ * for easy of develment all code below this line needs to be kept in sync
+ * along all board variations
+ *
+ * required from above are
+ * - peek
+ * - poke
+ */
+
+#define VERSION "0"
+#define DEBUG_OUTPUT 0
+
 uint16_t inputHex( uint16_t value, int b )
 {
   if( (b >= '0') && (b <= '9') )
@@ -64,6 +80,13 @@ uint16_t inputHex( uint16_t value, int b )
   return value;
 }
 
+void printHex(int num)
+{
+  char tmp[4];
+  sprintf(tmp, "%02X", num);
+  Serial.print(tmp);
+}
+
 void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
 {
   uint16_t i;
@@ -79,7 +102,7 @@ void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
 #if DEBUG_OUTPUT
       Serial.printf( "%04X %02X\n", arg1, peek( arg1 ) );
 #else      
-      Serial.printf( "%02X", peek( arg1 ) );
+      printHex( peek( arg1 ) );
 #endif
       break;
     case 'W':
@@ -91,7 +114,7 @@ void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
 #if DEBUG_OUTPUT
         Serial.printf( "%04X %02X\n", arg1+i, peek( arg1+i ) );
 #else      
-        Serial.printf( "%02X", peek( arg1+i ) );
+        printHex( peek( arg1+i ) );
 #endif
       }
 #if DEBUG_OUTPUT
@@ -101,7 +124,8 @@ void executeCmd( uint8_t cmd, uint16_t arg1, uint16_t arg2 )
   }
 }
 
-void loop() {
+void loop()
+{
   int incomingByte;
   uint8_t cmd = 0;
   uint8_t pos = 0;
@@ -114,7 +138,7 @@ void loop() {
     if (Serial.available() > 0)
     {
       incomingByte = Serial.read();
-      if( incomingByte == 0x0d )
+      if( incomingByte == '\r' )
       {
         pos = 255;
       }
