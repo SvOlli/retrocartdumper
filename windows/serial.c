@@ -20,25 +20,6 @@ ser_fd_t ser_open( const char *devname, int baud )
    dcb.StopBits        = ONESTOPBIT;
    dcb.ByteSize        = 8;
 
-   dcb.fOutxCtsFlow    = 0;
-   dcb.fOutxDsrFlow    = 0;
-   dcb.fDtrControl     = DTR_CONTROL_HANDSHAKE;
-   dcb.fDsrSensitivity = 0;
-   dcb.fRtsControl     = RTS_CONTROL_DISABLE;
-   dcb.fOutX           = 0;
-   dcb.fInX            = 0;
-
-   dcb.fErrorChar      = 0;
-   dcb.fBinary         = 1;
-   dcb.fNull           = 0;
-   dcb.fAbortOnError   = 0;
-   dcb.wReserved       = 0;
-   dcb.XonLim          = 2;
-   dcb.XoffLim         = 4;
-   dcb.XonChar         = 0x13;
-   dcb.XoffChar        = 0x19;
-   dcb.EvtChar         = 0;
-
    fd = CreateFile( devname, GENERIC_READ | GENERIC_WRITE,
                              0, NULL, OPEN_EXISTING, 0, NULL );
 

@@ -38,49 +38,69 @@ Pinout Teensy++ 2.0
  20-|___|-21
 
 ```
+Pinout Arduino Nano
+-------------------
+```
+     _ _
+ 16-| v |-15
+ 17-|   |-14
+ 18-|   |-13
+ 19-|   |-12
+ 20-|   |-11
+ 21-|   |-10
+ 22-|   |-9
+ 23-|   |-8
+ 24-|   |-7
+ 25-|   |-6
+ 26-|   |-5
+ 27-|   |-4
+ 28-|   |-3
+ 29-|   |-2
+ 30-|___|-1
 
-| Atari 2600 Pin | Atari 2600 Name | Teensy++ 2.0 Pin | Teensy++ 2.0 Name |
-|----------------|-----------------|------------------|-------------------|
-| 24             | SGND            | 1                | GND               |
-| -              | -               | 2                | PB7               |
-| 22             | A8              | 3                | PD0               |
-| 21             | A9              | 4                | PD1               |
-| 19             | A10             | 5                | PD2               |
-| 20             | A11             | 6                | PD3               |
-| 18             | A12             | 7                | PD4               |
-| -              | (A13)*          | 8                | PD5               |
-| -              | (A14)*          | 9                | PD6               |
-| -              | (A15)*          | 10               | PD7               |
-| -              | (R/W)*          | 11               | PE0               |
-| -              | -               | 12               | PE1               |
-| 8              | A0              | 13               | PC0               |
-| 7              | A1              | 14               | PC1               |
-| 6              | A2              | 15               | PC2               |
-| 5              | A3              | 16               | PC3               |
-| 4              | A4              | 17               | PC4               |
-| 3              | A5              | 18               | PC5               |
-| 2              | A6              | 19               | PC6               |
-| 1              | A7              | 20               | PC7               |
-| 17             | D7              | 21               | PF7               |
-| 16             | D6              | 22               | PF6               |
-| 15             | D5              | 23               | PF5               |
-| 14             | D4              | 24               | PF4               |
-| 13             | D3              | 25               | PF3               |
-| 11             | D2              | 26               | PF2               |
-| 10             | D1              | 27               | PF1               |
-| 9              | D0              | 28               | PF0               |
-| -              | -               | 29               | AREF              |
-| 12             | GND             | 30               | GND               |
-| -              | -               | 31               | PE6               |
-| -              | -               | 32               | PE7               |
-| -              | -               | 33               | PB0               |
-| -              | -               | 34               | PB1               |
-| -              | -               | 35               | PB2               |
-| -              | -               | 36               | PB3               |
-| -              | -               | 37               | PB4               |
-| -              | -               | 38               | PB5               |
-| -              | -               | 39               | PB6               |
-| 23             | +5V             | 40               | VCC               |
+```
 
-(* These signals do not exist on the Atari 2600 cartridge slot, but are still handled by
-firmware like the would exist. For easier adaptation to other platforms.)
+| Atari 2600 Pin  | Teensy++ 2.0 Pin | Arduino Nano Pin |
+|-----------------|------------------|------------------|
+| A7  (1)         | PC7  (20)        | D9  (12)         |
+| A6  (2)         | PC6  (19)        | D8  (11)         |
+| A5  (3)         | PC5  (18)        | D7  (10)         |
+| A4  (4)         | PC4  (17)        | D6  (9)          |
+| A3  (5)         | PC3  (16)        | D5  (8)          |
+| A2  (6)         | PC2  (15)        | D4  (7)          |
+| A1  (7)         | PC1  (14)        | D3  (6)          |
+| A0  (8)         | PC0  (13)        | D2  (5)          |
+| D0  (9)         | PF0  (28)        | A0  (19) ***     |
+| D1  (10)        | PF1  (27)        | A1  (20)         |
+| D2  (11)        | PF2  (26)        | A2  (21)         |
+| GND (12)        | GND  (30)        | GND (29)         |
+| D3  (13)        | PF3  (25)        | A3  (22)         |
+| D4  (14)        | PF4  (24)        | A4  (23)         |
+| D5  (15)        | PF5  (23)        | A5  (24)         |
+| D6  (16)        | PF6  (22)        | A6  (25)         |
+| D7  (17)        | PF7  (21)        | A7  (26)         |
+| R/W *           | PE0  (11)        | --               |
+| A15 *           | PD7  (10)        | --               |
+| A14 *           | PD6  (9)         | --               |
+| A13 *           | PD5  (8)         | --               |
+| A12 (18)        | PD4  (7)         | ***5V*** (27) ** |
+| A11 (***20***)  | PD3  (6)         | D13 (16)         |
+| A10 (***19***)  | PD2  (5)         | D12 (15)         |
+| A9  (21)        | PD1  (4)         | D11 (14)         |
+| A8  (22)        | PD0  (3)         | D10 (13)         |
+| +5V (23)        | +5V  (40)        | +5V (27)         |
+| GND (24)        | GND  (1)         | GND (4)          |
+---------------------------------------------------------
+
+\* [Teensy++ 2.0] Signals A13, A14, A15 and R/W do not exist on the Atari 2600 cartridge slot, but are still handled by the Teensy dumper like they would exist. 
+This is done for easier adaptation to other platforms.
+
+\*\* [Arduino Nano] Because GPIO pins are limited on the Nano, the cartridge A12 signal is wired to +5V, which basically always selects the ROM address space $1000-$1fff.
+This means that when using the Nano dumper, only bankswitching schemes are supported which use hotspots *within* the cartridge ROM address space.
+For most cartridges brands (e.g. Atari, Activision, Imagic, CBS, M-Network and Parker Brothers) this is sufficient.
+If you need support for dumping TigerVision's 3F or Superbanking cartridges, please use the Teensy++ 2.0 microcontroller instead.
+
+\*\*\* [Arduino Nano] Since the A6 and A7 pins on the Nano are analog-in only, writing to the the data bus is not
+supported on the Nano. This means that poke/write commands are ignored. 
+If you need to do poke/write to the cartridge, please use the Teensy++ 2.0 microcontroller instead.
+
