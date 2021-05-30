@@ -70,7 +70,7 @@ Pinout Arduino Nano
 | A2  (6)         | PC2  (15)        | D4  (7)          |
 | A1  (7)         | PC1  (14)        | D3  (6)          |
 | A0  (8)         | PC0  (13)        | D2  (5)          |
-| D0  (9)         | PF0  (28)        | A0  (19)         |
+| D0  (9)         | PF0  (28)        | A0  (19) ***     |
 | D1  (10)        | PF1  (27)        | A1  (20)         |
 | D2  (11)        | PF2  (26)        | A2  (21)         |
 | GND (12)        | GND  (30)        | GND (29)         |
@@ -92,10 +92,15 @@ Pinout Arduino Nano
 | GND (24)        | GND  (1)         | GND (4)          |
 ---------------------------------------------------------
 
-\* Signals A13, A14, A15 and R/W do not exist on the Atari 2600 cartridge slot, but are still handled by the Teensy dumper like they would exist. 
+\* [Teensy++ 2.0] Signals A13, A14, A15 and R/W do not exist on the Atari 2600 cartridge slot, but are still handled by the Teensy dumper like they would exist. 
 This is done for easier adaptation to other platforms.
 
-\*\* Because GPIO pins are limited on the Nano, the cartridge A12 signal is wired to +5V, which basically always selects the ROM address space $1000-$1fff.\
+\*\* [Arduino Nano] Because GPIO pins are limited on the Nano, the cartridge A12 signal is wired to +5V, which basically always selects the ROM address space $1000-$1fff.
 This means that when using the Nano dumper, only bankswitching schemes are supported which use hotspots *within* the cartridge ROM address space.
 For most cartridges brands (e.g. Atari, Activision, Imagic, CBS, M-Network and Parker Brothers) this is sufficient.
 If you need support for dumping TigerVision's 3F or Superbanking cartridges, please use the Teensy++ 2.0 microcontroller instead.
+
+\*\*\* [Arduino Nano] Since the A6 and A7 pins on the Nano are analog-in only, writing to the the data bus is not
+supported on the Nano. This means that poke/write commands are ignored. 
+If you need to do poke/write to the cartridge, please use the Teensy++ 2.0 microcontroller instead.
+
