@@ -27,7 +27,7 @@ void exiterror( char *message, int retval )
 static int readhexbyte( ser_fd_t serfd )
 {
    char tmp[3];
-   tmp[2] = '\0';
+   memset( tmp, 0, sizeof(tmp) );
 
    if( ser_read( serfd, &tmp[0], 2 ) != 2 )
    {
@@ -40,7 +40,7 @@ static ssize_t readhex( ser_fd_t serfd, unsigned char *buffer, ssize_t size )
 {
    ssize_t readsize = 0;
    char tmp[3];
-   tmp[3] = '\0';
+   memset( tmp, 0, sizeof(tmp) );
 
    while( readsize < size )
    {
