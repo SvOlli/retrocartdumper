@@ -47,19 +47,19 @@ static void dump_hotspots( ser_fd_t serfd, int outfd, int bufferstart, int buffe
 
 void dump_f8( ser_fd_t serfd, int outfd )
 {
-   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFF8, 2 );
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFF8, 0x02 );
 }
 
 
 void dump_f6( ser_fd_t serfd, int outfd )
 {
-   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFF6, 4 );
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFF6, 0x04 );
 }
 
 
 void dump_f4( ser_fd_t serfd, int outfd )
 {
-   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFF4, 8 );
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0xFFF4, 0x08 );
 }
 
 
@@ -90,4 +90,10 @@ void dump_sb128( ser_fd_t serfd, int outfd )
 void dump_sb256( ser_fd_t serfd, int outfd )
 {
    dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0x0800, 0x40 );
+}
+
+
+void dump_fa( ser_fd_t serfd, int outfd )
+{
+   dump_hotspots( serfd, outfd, 0xF000, 0x1000, 0x1FF8, 0x03 );
 }
